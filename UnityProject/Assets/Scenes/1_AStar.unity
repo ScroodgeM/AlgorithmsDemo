@@ -152,9 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f96a6d68465c7694cbf0acbbb6daf4eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabsToSpawnOnAwake:
-  - {fileID: 1712987659200680984, guid: 32b11395b05725643b029566999c2f82, type: 3}
-  - {fileID: 2091044717061897434, guid: a8792481ee5d3ca46b6a58a15024e912, type: 3}
+  worldsPrefab: {fileID: 1712987659200680984, guid: 32b11395b05725643b029566999c2f82, type: 3}
+  hudsPrefab: {fileID: 2091044717061897434, guid: a8792481ee5d3ca46b6a58a15024e912, type: 3}
 --- !u!4 &2007695732
 Transform:
   m_ObjectHideFlags: 0

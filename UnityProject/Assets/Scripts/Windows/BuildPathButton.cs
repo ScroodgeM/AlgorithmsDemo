@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using AlgorithmsDemo.Algoritms;
 using AlgorithmsDemo.DTS;
 using AlgorithmsDemo.Interfaces;
+using AlgorithmsDemo.World;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,17 +16,15 @@ namespace AlgorithmsDemo.Windows
         internal event Action<AStarPathBuilderResult> OnPathBuilt = result => { };
 
         [SerializeField] private Button button;
-        [SerializeField] private GameObject worldContainer;
-        [SerializeField] private GameObject startEndPointContainer;
 
-        private IWorldForPathBuilder worldForPathBuilder;
+        private Main main;
         private IStartEndPointProvider startEndPointProvider;
 
         private void Awake()
         {
-            worldForPathBuilder = worldContainer.GetComponentInChildren<IWorldForPathBuilder>();
-
-            startEndPointProvider = startEndPointContainer.GetComponentInChildren<IStartEndPointProvider>();
+            main = GetComponentInParent<Main>();
+            
+            startEndPointProvider = main.WorldsInstance.GetComponentInChildren<IStartEndPointProvider>();
             startEndPointProvider.StartPoint.OnValueChanged += point => UpdatePath();
             startEndPointProvider.EndPoint.OnValueChanged += point => UpdatePath();
 
@@ -36,6 +35,8 @@ namespace AlgorithmsDemo.Windows
 
         private void UpdatePath()
         {
+            WorldForPathBuilder worldForPathBuilder = main.WorldsInstance.GetComponentInChildren<WorldForPathBuilder>();
+
             AStarPathBuilder pathBuilder = new AStarPathBuilder(worldForPathBuilder);
 
             AStarPathBuilderResult pathBuilderResult;

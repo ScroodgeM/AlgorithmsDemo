@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using AlgorithmsDemo.DTS;
-using AlgorithmsDemo.Interfaces;
+using AlgorithmsDemo.World;
 using UnityEngine;
 
 namespace AlgorithmsDemo.Algoritms
@@ -33,7 +33,7 @@ namespace AlgorithmsDemo.Algoritms
         public event Action OnRefresh = () => { };
         public IEnumerable<Vector2Int> LastPath => lastPath;
 
-        private readonly IWorldForPathBuilder world;
+        private readonly WorldForPathBuilder world;
         private readonly ArrayXY<Cell> cells;
 
         private readonly List<Vector2Int> lastPath = new List<Vector2Int>();
@@ -42,7 +42,7 @@ namespace AlgorithmsDemo.Algoritms
         private const int twoAxisStep = 3;
         private const int maxCycles = 1000;
 
-        public AStarPathBuilder(IWorldForPathBuilder world)
+        public AStarPathBuilder(WorldForPathBuilder world)
         {
             this.world = world;
             cells = new ArrayXY<Cell>(world.GetWorldSize(), Cell.Default, pos => Cell.Default);
