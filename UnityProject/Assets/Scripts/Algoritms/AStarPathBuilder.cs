@@ -6,9 +6,9 @@ using AlgorithmsDemo.DTS;
 using AlgorithmsDemo.Interfaces;
 using UnityEngine;
 
-namespace AlgorithmsDemo.AStar
+namespace AlgorithmsDemo.Algoritms
 {
-    public class PathBuilder
+    public class AStarPathBuilder
     {
         private struct Cell
         {
@@ -42,7 +42,7 @@ namespace AlgorithmsDemo.AStar
         private const int twoAxisStep = 3;
         private const int maxCycles = 1000;
 
-        public PathBuilder(IWorldForPathBuilder world)
+        public AStarPathBuilder(IWorldForPathBuilder world)
         {
             this.world = world;
             cells = new ArrayXY<Cell>(world.GetWorldSize(), Cell.Default, pos => Cell.Default);
