@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using AlgorithmsDemo.Algoritms;
 using AlgorithmsDemo.DTS;
-using AlgorithmsDemo.Interfaces;
 using AlgorithmsDemo.World;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,15 +15,11 @@ namespace AlgorithmsDemo.Windows
         internal event Action<AStarPathBuilderResult> OnPathBuilt = result => { };
 
         [SerializeField] private Button button;
-
-        private Main main;
-        private IStartEndPointProvider startEndPointProvider;
+        [SerializeField] private StartEndPointProvider startEndPointProvider;
+        [SerializeField] private GameObject worldRoot;
 
         private void Awake()
         {
-            main = GetComponentInParent<Main>();
-            
-            startEndPointProvider = main.WorldsInstance.GetComponentInChildren<IStartEndPointProvider>();
             startEndPointProvider.StartPoint.OnValueChanged += point => UpdatePath();
             startEndPointProvider.EndPoint.OnValueChanged += point => UpdatePath();
 
@@ -35,17 +30,29 @@ namespace AlgorithmsDemo.Windows
 
         private void UpdatePath()
         {
-            WorldForPathBuilder worldForPathBuilder = main.WorldsInstance.GetComponentInChildren<WorldForPathBuilder>();
+            WorldForPathBuilder worldForPathBuilder = worldRoot.GetComponentInChildren<WorldForPathBuilder>();
 
-            AStarPathBuilder pathBuilder = new AStarPathBuilder(worldForPathBuilder);
+            if (worldForPathBuilder != null)
+            {
+                AStarPathBuilder pathBuilder = new AStarPathBuilder(worldForPathBuilder);
 
-            AStarPathBuilderResult pathBuilderResult;
+                AStarPathBuilderResult pathBuilderResult;
 
-            List<Vector2Int> path = new List<Vector2Int>();
+                List<Vector2Int> path = new List<Vector2Int>();
 
-            pathBuilder.BuildPath(startEndPointProvider.StartPoint.Value, startEndPointProvider.EndPoint.Value, path);
+                pathBuilder.BuildPath(startEndPointProvider.StartPoint.Value, startEndPointProvider.EndPoint.Value, path);
 
-            OnPathBuilt(pathBuilderResult);
+                OnPathBuilt(pathBuilderResult);
+
+                foreach (Vector2Int point in path)
+                {
+                    Debug.Log(point);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("create map first");
+            }
         }
     }
 }
