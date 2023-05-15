@@ -36,12 +36,12 @@ namespace AlgorithmsDemo.Windows
             {
                 AStarPathBuilder pathBuilder = new AStarPathBuilder(worldForPathBuilder);
 
-                AStarPathBuilderResult pathBuilderResult;
-
                 List<Vector2Int> path = new List<Vector2Int>();
 
                 pathBuilder.BuildPath(startEndPointProvider.StartPoint.Value, startEndPointProvider.EndPoint.Value, path);
 
+                AStarPathBuilderResult pathBuilderResult;
+                pathBuilderResult.path = path;
                 OnPathBuilt(pathBuilderResult);
 
                 foreach (Vector2Int point in path)

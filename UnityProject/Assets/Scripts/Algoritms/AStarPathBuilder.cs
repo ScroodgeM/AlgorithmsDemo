@@ -166,7 +166,6 @@ namespace AlgorithmsDemo.Algoritms
                 iterator = newIterator;
             }
 
-            // insert "from" to allow remove extra point right after "from"
             lastPath.Insert(0, from);
 
             // remove extra points from path
@@ -177,8 +176,6 @@ namespace AlgorithmsDemo.Algoritms
                     lastPath.RemoveAt(i);
                 }
             }
-
-            lastPath.RemoveAt(0);
         }
 
         private Cell TrySolve(Vector2Int solvePosition, Vector2Int goalPosition)
