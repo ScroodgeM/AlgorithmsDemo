@@ -1064,8 +1064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d42ccfc20b4148b15155acbc00a305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabsArray:
-  - {fileID: 3191611689017573841, guid: 84c0165003647c049b271ab1d0fa1309, type: 3}
+  prefabsArray: []
   prefabsDropdown: {fileID: 3086310051812740646}
 --- !u!1 &7504071110966537609
 GameObject:
