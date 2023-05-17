@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using AlgorithmsDemo.DTS;
-using AlgorithmsDemo.Windows;
 using UnityEngine;
 
 namespace AlgorithmsDemo.World
 {
     public class AStarPathVisualizer : MonoBehaviour
     {
-        [SerializeField] private BuildPathButton buildPathButton;
+        [SerializeField] private FollowPath followPath;
         [SerializeField] private GameObject pathStepPrefab;
         [SerializeField] private float visualizeHeight;
 
@@ -15,10 +14,10 @@ namespace AlgorithmsDemo.World
 
         private void Awake()
         {
-            buildPathButton.OnPathBuilt += OnPathBuilt;
+            followPath.OnPathUpdated += OnPathUpdated;
         }
 
-        private void OnPathBuilt(AStarPathBuilderResult result)
+        private void OnPathUpdated(IEnumerable<Vector2Int> path)
         {
             foreach (GameObject victim in destroyBeforeVisualize)
             {
@@ -27,14 +26,21 @@ namespace AlgorithmsDemo.World
 
             destroyBeforeVisualize.Clear();
 
-            VisualizePath(result.path);
+            VisualizePath(path);
         }
 
-        private void VisualizePath(List<Vector2Int> path)
+        private void VisualizePath(IEnumerable<Vector2Int> path)
         {
-            for (int i = 1; i < path.Count; i++)
+            Vector2Int? previousPoint = null;
+
+            foreach (Vector2Int pointOnPath in path)
             {
-                VisualizeStep(path[i - 1], path[i]);
+                if (previousPoint.HasValue == true)
+                {
+                    VisualizeStep(previousPoint.Value, pointOnPath);
+                }
+
+                previousPoint = pointOnPath;
             }
         }
 
@@ -42,14 +48,14 @@ namespace AlgorithmsDemo.World
         {
             GameObject pathStepInstance = Instantiate(pathStepPrefab, transform);
 
-            Vector3 fromV3 = new Vector3(from.x, visualizeHeight, from.y);
-            Vector3 toV3 = new Vector3(to.x, visualizeHeight, to.y);
+            Vector3 fromV3 = from.ToVector3() + new Vector3(0, visualizeHeight, 0);
+            Vector3 toV3 = to.ToVector3() + new Vector3(0, visualizeHeight, 0);
             pathStepInstance.transform.position = (fromV3 + toV3) * 0.5f;
-            
+
             Vector3 localScale = pathStepInstance.transform.localScale;
             localScale.z = (fromV3 - toV3).magnitude;
             pathStepInstance.transform.localScale = localScale;
-            
+
             pathStepInstance.transform.rotation = Quaternion.LookRotation(toV3 - fromV3, Vector3.up);
 
             destroyBeforeVisualize.Add(pathStepInstance);
