@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//this empty line for UTF-8 BOM header
+using UnityEngine;
 
 namespace AlgorithmsDemo.DTS
 {

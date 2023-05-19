@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿//this empty line for UTF-8 BOM header
+using System.Collections.Generic;
 using AlgorithmsDemo.DTS;
 using UnityEngine;
 

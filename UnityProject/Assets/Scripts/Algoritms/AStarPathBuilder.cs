@@ -16,7 +16,7 @@ namespace AlgorithmsDemo.Algoritms
             public readonly int distFromStart; //accurately calculated
             public readonly int distToEnd; //predicted shortest way
 
-            public int PathLength { get { return distFromStart + distToEnd; } }
+            public int PathLength => distFromStart + distToEnd;
 
             public Cell(bool isReady, int distFromStart, int distToEnd)
             {
@@ -25,7 +25,7 @@ namespace AlgorithmsDemo.Algoritms
                 this.distToEnd = distToEnd;
             }
 
-            public static Cell Default { get { return new Cell(false, int.MaxValue, int.MaxValue); } }
+            public static Cell Default => new Cell(false, int.MaxValue, int.MaxValue);
 
             public override string ToString() => $"(isReady={isReady}, distFromStart={distFromStart}, distToEnd={distToEnd})";
         }
@@ -46,10 +46,6 @@ namespace AlgorithmsDemo.Algoritms
         {
             this.world = world;
             cells = new ArrayXY<Cell>(world.GetWorldSize(), Cell.Default, pos => Cell.Default);
-        }
-
-        internal void Die()
-        {
         }
 
         public void BuildPath(Vector2Int from, Vector2Int to, List<Vector2Int> toFill)
@@ -163,6 +159,7 @@ namespace AlgorithmsDemo.Algoritms
                 {
                     throw new Exception($"PATH ERROR: path reverse from {to} to {from} stuck in point {newIterator}");
                 }
+
                 iterator = newIterator;
             }
 
