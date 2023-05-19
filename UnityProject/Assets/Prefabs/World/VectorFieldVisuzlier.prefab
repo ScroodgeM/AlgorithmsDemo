@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8126087938491759424}
-  - component: {fileID: 185767810279461230}
+  - component: {fileID: -183750316456831856}
   m_Layer: 0
-  m_Name: AStarPathVisualizer
+  m_Name: VectorFieldVisuzlier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &185767810279461230
+--- !u!114 &-183750316456831856
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 32408454052996222}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63db7aa45f4e4d2daaeadc1d0ebd6b87, type: 3}
+  m_Script: {fileID: 11500000, guid: 800c1851f28a3214aa2cd4275660e75f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followPath: {fileID: 0}
+  vectorFieldSpawner: {fileID: 0}
   pathStepPrefab: {fileID: 3150980051961385259, guid: d62056a469a55ac449a0f996c984fb3b, type: 3}
   visualizeHeight: 0.5

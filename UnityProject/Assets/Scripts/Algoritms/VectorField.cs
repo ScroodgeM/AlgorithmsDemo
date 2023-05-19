@@ -28,6 +28,8 @@ namespace AlgorithmsDemo.Algoritms
             public override string ToString() => $"(isReady={isReady}, distanceToTarget={distanceToTarget} directionToTarget={directionToTarget})";
         }
 
+        internal RectAreaInt Area => world.GetWorldSize();
+
         private readonly WorldForPathBuilder world;
         private readonly ArrayXY<Cell> cells;
 
@@ -38,20 +40,24 @@ namespace AlgorithmsDemo.Algoritms
         public VectorField(WorldForPathBuilder world)
         {
             this.world = world;
-            cells = new ArrayXY<Cell>(world.GetWorldSize(), Cell.Default, pos => Cell.Default);
+            cells = new ArrayXY<Cell>(Area, Cell.Default, pos => Cell.Default);
         }
 
         public void BuildField(Vector2Int target)
         {
             cells.ResetToValue(Cell.Default);
 
-            RectAreaInt workArea = world.GetWorldSize();
+            RectAreaInt workArea = Area;
 
             cells[target] = new Cell(true, 0, Vector2Int.zero);
 
             int stuckDefense = 0;
+            int incrementalRange = 0;
+
             while (true)
             {
+                incrementalRange++;
+
                 bool someSolutionFound = false;
 
                 int xMin = workArea.xMin;
@@ -61,8 +67,12 @@ namespace AlgorithmsDemo.Algoritms
 
                 for (int x = xMin; x <= xMax; x++)
                 {
+                    if (Mathf.Abs(x - target.x) > incrementalRange) continue;
+
                     for (int y = yMin; y <= yMax; y++)
                     {
+                        if (Mathf.Abs(y - target.y) > incrementalRange) continue;
+
                         Vector2Int pos = new Vector2Int(x, y);
                         if (cells[pos].isReady == false)
                         {
@@ -138,6 +148,6 @@ namespace AlgorithmsDemo.Algoritms
             return solution;
         }
 
-        private bool IsOnGrid(Vector2Int position) => world.GetWorldSize().Belongs(position);
+        private bool IsOnGrid(Vector2Int position) => Area.Belongs(position);
     }
 }
