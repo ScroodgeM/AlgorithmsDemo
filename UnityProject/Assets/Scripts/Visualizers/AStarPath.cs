@@ -1,14 +1,18 @@
 ﻿//this empty line for UTF-8 BOM header
+
 using System.Collections.Generic;
+using AlgorithmsDemo.Algoritms;
+using AlgorithmsDemo.World;
 using AlgorithmsDemo.DTS;
 using UnityEngine;
 
-namespace AlgorithmsDemo.World
+namespace AlgorithmsDemo.Visualizers
 {
-    public class AStarPathVisualizer : MonoBehaviour
+    public class AStarPath : MonoBehaviour
     {
         [SerializeField] private FollowPath followPath;
         [SerializeField] private GameObject pathStepPrefab;
+        [SerializeField] private AStarPathCell pathCellPrefab;
         [SerializeField] private float visualizeHeight;
 
         private readonly List<GameObject> destroyBeforeVisualize = new List<GameObject>();
@@ -28,6 +32,24 @@ namespace AlgorithmsDemo.World
             destroyBeforeVisualize.Clear();
 
             VisualizePath(followPath.GetPathBuilder().GetPath());
+            VisualizeGrid(followPath.GetPathBuilder());
+        }
+
+        private void VisualizeGrid(AStarPathBuilder pathBuilder)
+        {
+            RectAreaInt area = pathBuilder.GetArea();
+            for (int x = area.xMin; x <= area.xMax; x++)
+            {
+                for (int y = area.yMin; y <= area.yMax; y++)
+                {
+                    Vector2Int position = new Vector2Int(x, y);
+                    AStarPathCell pathCellInstance = Instantiate(pathCellPrefab, transform);
+                    Vector3 positionV3 = position.ToVector3() + new Vector3(0, visualizeHeight, 0);
+                    pathCellInstance.transform.position = positionV3;
+                    pathCellInstance.Init(pathBuilder.GetCell(position));
+                    destroyBeforeVisualize.Add(pathCellInstance.gameObject);
+                }
+            }
         }
 
         private void VisualizePath(IEnumerable<Vector2Int> path)

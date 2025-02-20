@@ -30,6 +30,7 @@ namespace AlgorithmsDemo.Algoritms
             public override string ToString() => $"(isReady={isReady}, distFromStart={distFromStart}, distToEnd={distToEnd})";
         }
 
+        public RectAreaInt GetArea() => world.GetWorldSize();
         public IEnumerable<Vector2Int> GetPath() => lastPath;
         public Cell GetCell(Vector2Int position) => cells[position];
 
