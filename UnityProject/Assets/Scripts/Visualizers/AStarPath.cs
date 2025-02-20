@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AlgorithmsDemo.Algoritms;
 using AlgorithmsDemo.World;
 using AlgorithmsDemo.DTS;
+using TMPro;
 using UnityEngine;
 
 namespace AlgorithmsDemo.Visualizers
@@ -11,6 +12,7 @@ namespace AlgorithmsDemo.Visualizers
     public class AStarPath : MonoBehaviour
     {
         [SerializeField] private FollowPath followPath;
+        [SerializeField] private TMP_Text globalInfoLabel;
         [SerializeField] private GameObject pathStepPrefab;
         [SerializeField] private AStarPathCell pathCellPrefab;
         [SerializeField] private float visualizeHeight;
@@ -31,7 +33,8 @@ namespace AlgorithmsDemo.Visualizers
 
             destroyBeforeVisualize.Clear();
 
-            VisualizePath(followPath.GetPathBuilder().GetPath());
+            globalInfoLabel.text = $"Expected path length: {followPath.GetPathBuilder().GetExpectedPathLength()}";
+            VisualizePath(followPath.GetPathBuilder());
             VisualizeGrid(followPath.GetPathBuilder());
         }
 
@@ -43,20 +46,24 @@ namespace AlgorithmsDemo.Visualizers
                 for (int y = area.yMin; y <= area.yMax; y++)
                 {
                     Vector2Int position = new Vector2Int(x, y);
-                    AStarPathCell pathCellInstance = Instantiate(pathCellPrefab, transform);
-                    Vector3 positionV3 = position.ToVector3() + new Vector3(0, visualizeHeight, 0);
-                    pathCellInstance.transform.position = positionV3;
-                    pathCellInstance.Init(pathBuilder.GetCell(position));
-                    destroyBeforeVisualize.Add(pathCellInstance.gameObject);
+                    AStarPathBuilder.Cell cell = pathBuilder.GetCell(position);
+                    if (cell.isReady == true)
+                    {
+                        AStarPathCell pathCellInstance = Instantiate(pathCellPrefab, transform);
+                        Vector3 positionV3 = position.ToVector3() + new Vector3(0, visualizeHeight, 0);
+                        pathCellInstance.transform.position = positionV3;
+                        pathCellInstance.Init(cell);
+                        destroyBeforeVisualize.Add(pathCellInstance.gameObject);
+                    }
                 }
             }
         }
 
-        private void VisualizePath(IEnumerable<Vector2Int> path)
+        private void VisualizePath(AStarPathBuilder pathBuilder)
         {
             Vector2Int? previousPoint = null;
 
-            foreach (Vector2Int pointOnPath in path)
+            foreach (Vector2Int pointOnPath in pathBuilder.GetPath())
             {
                 if (previousPoint.HasValue == true)
                 {

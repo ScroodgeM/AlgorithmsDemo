@@ -14,6 +14,7 @@ namespace AlgorithmsDemo.World
 
         [SerializeField] private GameObject worldRoot;
         [SerializeField] private float speed;
+        [SerializeField] private int iterations;
 
         private readonly List<Vector2Int> currentPath = new List<Vector2Int>();
         private AStarPathBuilder pathBuilder;
@@ -22,6 +23,8 @@ namespace AlgorithmsDemo.World
         {
             if (Input.GetMouseButtonDown(0) == true)
             {
+                iterations++;
+
                 Ray clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 Vector3 clickPointOnGround = clickRay.origin - clickRay.direction / clickRay.direction.y * clickRay.origin.y;
@@ -37,7 +40,7 @@ namespace AlgorithmsDemo.World
 
                     currentPath.Clear();
 
-                    pathBuilder.BuildPath(transform.position.ToVector2Int(), clickPointOnGround.ToVector2Int(), currentPath);
+                    pathBuilder.BuildPath(transform.position.ToVector2Int(), clickPointOnGround.ToVector2Int(), iterations, currentPath);
 
                     OnPathUpdated();
 

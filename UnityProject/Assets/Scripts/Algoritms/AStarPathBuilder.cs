@@ -33,10 +33,12 @@ namespace AlgorithmsDemo.Algoritms
         public RectAreaInt GetArea() => world.GetWorldSize();
         public IEnumerable<Vector2Int> GetPath() => lastPath;
         public Cell GetCell(Vector2Int position) => cells[position];
+        public int GetExpectedPathLength() => lastExpectedPathLength;
 
         private readonly WorldForPathBuilder world;
         private readonly ArrayXY<Cell> cells;
         private readonly List<Vector2Int> lastPath = new List<Vector2Int>();
+        private int lastExpectedPathLength;
 
         private const int oneAxisStep = 2;
         private const int twoAxisStep = 3;
@@ -48,7 +50,7 @@ namespace AlgorithmsDemo.Algoritms
             cells = new ArrayXY<Cell>(world.GetWorldSize(), Cell.Default, pos => Cell.Default);
         }
 
-        public void BuildPath(Vector2Int from, Vector2Int to, List<Vector2Int> toFill)
+        public void BuildPath(Vector2Int from, Vector2Int to, int iterations, List<Vector2Int> toFill)
         {
             cells.ResetToValue(Cell.Default);
             lastPath.Clear();
@@ -59,8 +61,8 @@ namespace AlgorithmsDemo.Algoritms
             workArea.Expand(to, 1);
             workArea.Clamp(world.GetWorldSize());
 
-            int expectedPathLength = GetShortestPathLength(from, to);
-            cells[from] = new Cell(true, 0, expectedPathLength);
+            lastExpectedPathLength = GetShortestPathLength(from, to);
+            cells[from] = new Cell(true, 0, lastExpectedPathLength);
 
             int stuckDefense = 0;
             while (true)
@@ -88,7 +90,7 @@ namespace AlgorithmsDemo.Algoritms
                                     bestSolution = solution;
                                 }
 
-                                if (solution.PathLength == expectedPathLength)
+                                if (solution.PathLength == lastExpectedPathLength)
                                 {
                                     cells[pos] = solution;
                                     someSolutionFound = true;
@@ -96,9 +98,14 @@ namespace AlgorithmsDemo.Algoritms
                                     //if border reached => expand work area
                                     workArea.Expand(pos, 1);
                                     workArea.Clamp(world.GetWorldSize());
+
+                                    if (--iterations <= 0)
+                                    {
+                                        return;
+                                    }
                                 }
 
-                                if (solution.PathLength < expectedPathLength)
+                                if (solution.PathLength < lastExpectedPathLength)
                                 {
                                     throw new Exception($"path found that is shorter than expected during calculation: from {from} to {to}, in cell {pos}");
                                 }
@@ -110,7 +117,7 @@ namespace AlgorithmsDemo.Algoritms
                 //if destination reached => return path
                 if (cells[to].isReady == true)
                 {
-                    FinalizePath(from, to);
+                    FinalizePath(from, to, ref iterations);
 
                     toFill.AddRange(lastPath);
 
@@ -127,7 +134,11 @@ namespace AlgorithmsDemo.Algoritms
                     if (bestSolution.isReady == true)
                     {
                         //if to path found => increase path length limit and repeat
-                        expectedPathLength = bestSolution.PathLength;
+                        lastExpectedPathLength = bestSolution.PathLength;
+                        if (--iterations <= 0)
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -143,7 +154,7 @@ namespace AlgorithmsDemo.Algoritms
             }
         }
 
-        private void FinalizePath(Vector2Int from, Vector2Int to)
+        private void FinalizePath(Vector2Int from, Vector2Int to, ref int iterations)
         {
             Vector2Int iterator = to;
 
@@ -158,6 +169,11 @@ namespace AlgorithmsDemo.Algoritms
                 }
 
                 iterator = newIterator;
+
+                if (--iterations <= 0)
+                {
+                    return;
+                }
             }
 
             lastPath.Insert(0, from);
@@ -168,6 +184,11 @@ namespace AlgorithmsDemo.Algoritms
                 if (IsLineWalkable(lastPath[i - 1], lastPath[i + 1]) == true)
                 {
                     lastPath.RemoveAt(i);
+
+                    if (--iterations <= 0)
+                    {
+                        return;
+                    }
                 }
             }
         }
