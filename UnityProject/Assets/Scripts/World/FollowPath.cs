@@ -1,4 +1,5 @@
 ﻿//this empty line for UTF-8 BOM header
+
 using System;
 using System.Collections.Generic;
 using AlgorithmsDemo.Algoritms;
@@ -9,12 +10,13 @@ namespace AlgorithmsDemo.World
 {
     public class FollowPath : MonoBehaviour
     {
-        internal event Action<IEnumerable<Vector2Int>> OnPathUpdated = _ => { };
+        internal event Action OnPathUpdated = () => { };
 
         [SerializeField] private GameObject worldRoot;
         [SerializeField] private float speed;
 
         private readonly List<Vector2Int> currentPath = new List<Vector2Int>();
+        private AStarPathBuilder pathBuilder;
 
         private void Update()
         {
@@ -28,13 +30,16 @@ namespace AlgorithmsDemo.World
 
                 if (worldForPathBuilder != null)
                 {
-                    AStarPathBuilder pathBuilder = new AStarPathBuilder(worldForPathBuilder);
+                    if (pathBuilder == null)
+                    {
+                        pathBuilder = new AStarPathBuilder(worldForPathBuilder);
+                    }
 
                     currentPath.Clear();
 
                     pathBuilder.BuildPath(transform.position.ToVector2Int(), clickPointOnGround.ToVector2Int(), currentPath);
 
-                    OnPathUpdated(currentPath);
+                    OnPathUpdated();
 
                     if (currentPath.Count > 0)
                     {
@@ -60,5 +65,7 @@ namespace AlgorithmsDemo.World
                 }
             }
         }
+
+        public AStarPathBuilder GetPathBuilder() => pathBuilder;
     }
 }

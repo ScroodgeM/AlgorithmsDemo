@@ -10,7 +10,7 @@ namespace AlgorithmsDemo.Algoritms
 {
     public class AStarPathBuilder
     {
-        private struct Cell
+        public struct Cell
         {
             public readonly bool isReady;
             public readonly int distFromStart; //accurately calculated
@@ -30,12 +30,11 @@ namespace AlgorithmsDemo.Algoritms
             public override string ToString() => $"(isReady={isReady}, distFromStart={distFromStart}, distToEnd={distToEnd})";
         }
 
-        public event Action OnRefresh = () => { };
-        public IEnumerable<Vector2Int> LastPath => lastPath;
+        public IEnumerable<Vector2Int> GetPath() => lastPath;
+        public Cell GetCell(Vector2Int position) => cells[position];
 
         private readonly WorldForPathBuilder world;
         private readonly ArrayXY<Cell> cells;
-
         private readonly List<Vector2Int> lastPath = new List<Vector2Int>();
 
         private const int oneAxisStep = 2;
@@ -51,6 +50,7 @@ namespace AlgorithmsDemo.Algoritms
         public void BuildPath(Vector2Int from, Vector2Int to, List<Vector2Int> toFill)
         {
             cells.ResetToValue(Cell.Default);
+            lastPath.Clear();
 
             RectAreaInt workArea = new RectAreaInt(from.x, from.y, 0, 0);
 
@@ -111,8 +111,6 @@ namespace AlgorithmsDemo.Algoritms
                 {
                     FinalizePath(from, to);
 
-                    OnRefresh();
-
                     toFill.AddRange(lastPath);
 
                     return;
@@ -146,8 +144,6 @@ namespace AlgorithmsDemo.Algoritms
 
         private void FinalizePath(Vector2Int from, Vector2Int to)
         {
-            lastPath.Clear();
-
             Vector2Int iterator = to;
 
             // build path by reverse

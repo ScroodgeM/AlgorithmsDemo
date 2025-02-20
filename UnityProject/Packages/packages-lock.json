@@ -4,8 +4,11 @@
       "version": "https://github.com/ScroodgeM/UnityTools.git",
       "depth": 0,
       "source": "git",
-      "dependencies": {},
-      "hash": "fcb49012b35b8d651c42e642084e978856a1efb7"
+      "dependencies": {
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "hash": "c25a171d65cdcd62ed7276e7df50d198028d9db1"
     },
     "com.unity.ext.nunit": {
       "version": "2.0.5",

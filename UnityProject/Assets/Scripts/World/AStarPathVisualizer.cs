@@ -18,7 +18,7 @@ namespace AlgorithmsDemo.World
             followPath.OnPathUpdated += OnPathUpdated;
         }
 
-        private void OnPathUpdated(IEnumerable<Vector2Int> path)
+        private void OnPathUpdated()
         {
             foreach (GameObject victim in destroyBeforeVisualize)
             {
@@ -27,7 +27,7 @@ namespace AlgorithmsDemo.World
 
             destroyBeforeVisualize.Clear();
 
-            VisualizePath(path);
+            VisualizePath(followPath.GetPathBuilder().GetPath());
         }
 
         private void VisualizePath(IEnumerable<Vector2Int> path)
