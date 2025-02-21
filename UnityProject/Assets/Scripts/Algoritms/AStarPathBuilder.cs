@@ -31,12 +31,16 @@ namespace AlgorithmsDemo.Algoritms
         }
 
         public RectAreaInt GetArea() => world.GetWorldSize();
+        public Vector2Int GetPathFrom() => pathFrom;
+        public Vector2Int GetPathTo() => pathTo;
         public IEnumerable<Vector2Int> GetPath() => lastPath;
         public Cell GetCell(Vector2Int position) => cells[position];
         public int GetExpectedPathLength() => lastExpectedPathLength;
 
         private readonly WorldForPathBuilder world;
         private readonly ArrayXY<Cell> cells;
+        private Vector2Int pathFrom;
+        private Vector2Int pathTo;
         private readonly List<Vector2Int> lastPath = new List<Vector2Int>();
         private int lastExpectedPathLength;
 
@@ -50,9 +54,11 @@ namespace AlgorithmsDemo.Algoritms
             cells = new ArrayXY<Cell>(world.GetWorldSize(), Cell.Default, pos => Cell.Default);
         }
 
-        public void BuildPath(Vector2Int from, Vector2Int to, int iterations, List<Vector2Int> toFill)
+        public void BuildPath(Vector2Int from, Vector2Int to, int iterations, List<Vector2Int> toFill, out string processInfoMessage)
         {
             cells.ResetToValue(Cell.Default);
+            this.pathFrom = from;
+            this.pathTo = to;
             lastPath.Clear();
 
             RectAreaInt workArea = new RectAreaInt(from.x, from.y, 0, 0);
@@ -63,6 +69,12 @@ namespace AlgorithmsDemo.Algoritms
 
             lastExpectedPathLength = GetShortestPathLength(from, to);
             cells[from] = new Cell(true, 0, lastExpectedPathLength);
+
+            if (--iterations <= 0)
+            {
+                processInfoMessage = "initialized";
+                return;
+            }
 
             int stuckDefense = 0;
             while (true)
@@ -101,6 +113,7 @@ namespace AlgorithmsDemo.Algoritms
 
                                     if (--iterations <= 0)
                                     {
+                                        processInfoMessage = "one more cell solved";
                                         return;
                                     }
                                 }
@@ -117,10 +130,15 @@ namespace AlgorithmsDemo.Algoritms
                 //if destination reached => return path
                 if (cells[to].isReady == true)
                 {
-                    FinalizePath(from, to, ref iterations);
+                    FinalizePath(ref iterations, out processInfoMessage);
+                    if (iterations <= 0)
+                    {
+                        return;
+                    }
 
                     toFill.AddRange(lastPath);
 
+                    processInfoMessage = "job done";
                     return;
                 }
 
@@ -137,6 +155,7 @@ namespace AlgorithmsDemo.Algoritms
                         lastExpectedPathLength = bestSolution.PathLength;
                         if (--iterations <= 0)
                         {
+                            processInfoMessage = "path length limit increased";
                             return;
                         }
                     }
@@ -154,29 +173,30 @@ namespace AlgorithmsDemo.Algoritms
             }
         }
 
-        private void FinalizePath(Vector2Int from, Vector2Int to, ref int iterations)
+        private void FinalizePath(ref int iterations, out string processInfoMessage)
         {
-            Vector2Int iterator = to;
+            Vector2Int iterator = pathTo;
 
             // build path by reverse
-            while (iterator.x != from.x || iterator.y != from.y)
+            while (iterator.x != pathFrom.x || iterator.y != pathFrom.y)
             {
                 lastPath.Insert(0, iterator);
                 Vector2Int newIterator = StepBack(iterator);
                 if (newIterator.x == iterator.x && newIterator.y == iterator.y)
                 {
-                    throw new Exception($"PATH ERROR: path reverse from {to} to {from} stuck in point {newIterator}");
+                    throw new Exception($"PATH ERROR: path reverse from {pathTo} to {pathFrom} stuck in point {newIterator}");
                 }
 
                 iterator = newIterator;
 
                 if (--iterations <= 0)
                 {
+                    processInfoMessage = "one more step found for final path";
                     return;
                 }
             }
 
-            lastPath.Insert(0, from);
+            lastPath.Insert(0, pathFrom);
 
             // remove extra points from path
             for (int i = lastPath.Count - 2; i >= 1; i--)
@@ -187,10 +207,15 @@ namespace AlgorithmsDemo.Algoritms
 
                     if (--iterations <= 0)
                     {
+                        processInfoMessage = "one explicit point removed from path";
                         return;
                     }
                 }
             }
+
+            --iterations;
+            processInfoMessage = "path creation completed";
+            return;
         }
 
         private Cell TrySolve(Vector2Int solvePosition, Vector2Int goalPosition)

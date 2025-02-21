@@ -10,7 +10,7 @@ namespace AlgorithmsDemo.World
 {
     public class FollowPath : MonoBehaviour
     {
-        internal event Action OnPathUpdated = () => { };
+        internal event Action<string> OnPathUpdated = processInfoMessage => { };
 
         [SerializeField] private GameObject worldRoot;
         [SerializeField] private float speed;
@@ -40,9 +40,9 @@ namespace AlgorithmsDemo.World
 
                     currentPath.Clear();
 
-                    pathBuilder.BuildPath(transform.position.ToVector2Int(), clickPointOnGround.ToVector2Int(), iterations, currentPath);
+                    pathBuilder.BuildPath(transform.position.ToVector2Int(), clickPointOnGround.ToVector2Int(), iterations, currentPath, out string processInfoMessage);
 
-                    OnPathUpdated();
+                    OnPathUpdated(processInfoMessage);
 
                     if (currentPath.Count > 0)
                     {
@@ -51,7 +51,7 @@ namespace AlgorithmsDemo.World
                 }
             }
 
-            if (currentPath.Count > 0)
+            if (currentPath.Count > 0 && speed > 0f)
             {
                 Vector3 myPosition = transform.position;
                 Vector3 nextPoint = currentPath[0].ToVector3();

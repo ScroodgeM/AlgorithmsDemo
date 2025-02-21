@@ -24,7 +24,7 @@ namespace AlgorithmsDemo.Visualizers
             followPath.OnPathUpdated += OnPathUpdated;
         }
 
-        private void OnPathUpdated()
+        private void OnPathUpdated(string processInfoMessage)
         {
             foreach (GameObject victim in destroyBeforeVisualize)
             {
@@ -33,7 +33,7 @@ namespace AlgorithmsDemo.Visualizers
 
             destroyBeforeVisualize.Clear();
 
-            globalInfoLabel.text = $"Expected path length: {followPath.GetPathBuilder().GetExpectedPathLength()}";
+            globalInfoLabel.text = $"Current action: {processInfoMessage}\nExpected path length: {followPath.GetPathBuilder().GetExpectedPathLength()}";
             VisualizePath(followPath.GetPathBuilder());
             VisualizeGrid(followPath.GetPathBuilder());
         }
@@ -47,12 +47,14 @@ namespace AlgorithmsDemo.Visualizers
                 {
                     Vector2Int position = new Vector2Int(x, y);
                     AStarPathBuilder.Cell cell = pathBuilder.GetCell(position);
-                    if (cell.isReady == true)
+                    bool isFinalPosition = position == pathBuilder.GetPathTo();
+                    if (cell.isReady == true || isFinalPosition)
                     {
                         AStarPathCell pathCellInstance = Instantiate(pathCellPrefab, transform);
                         Vector3 positionV3 = position.ToVector3() + new Vector3(0, visualizeHeight, 0);
                         pathCellInstance.transform.position = positionV3;
                         pathCellInstance.Init(cell);
+                        pathCellInstance.MarkAsFinalPosition(isFinalPosition);
                         destroyBeforeVisualize.Add(pathCellInstance.gameObject);
                     }
                 }
