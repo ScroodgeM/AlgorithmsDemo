@@ -11,11 +11,13 @@ namespace AlgorithmsDemo.Visualizers
 
         private void Awake()
         {
+            textLabel.gameObject.SetActive(false);
             finalPositionMarker.SetActive(false);
         }
 
         public void Init(AStarPathBuilder.Cell cell)
         {
+            textLabel.gameObject.SetActive(true);
             textLabel.text = cell.isReady ? $"<color=green>{cell.distFromStart}</color>+<color=red>{cell.distToEnd}</color>\n={cell.PathLength}" : "?";
         }
 

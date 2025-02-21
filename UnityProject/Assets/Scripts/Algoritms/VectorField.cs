@@ -30,9 +30,11 @@ namespace AlgorithmsDemo.Algoritms
         }
 
         internal RectAreaInt Area => world.GetWorldSize();
+        internal Vector2Int GetDestinationTarget() => destinationTarget;
 
         private readonly WorldForPathBuilder world;
         private readonly ArrayXY<Cell> cells;
+        private Vector2Int destinationTarget;
 
         private const int oneAxisStep = 2;
         private const int twoAxisStep = 3;
@@ -46,6 +48,8 @@ namespace AlgorithmsDemo.Algoritms
 
         public void BuildField(Vector2Int target)
         {
+            destinationTarget = target;
+
             cells.ResetToValue(Cell.Default);
 
             RectAreaInt workArea = Area;
