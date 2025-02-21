@@ -79,10 +79,19 @@ namespace AlgorithmsDemo.Algoritms
                         if (Mathf.Abs(y - target.y) > incrementalRange) continue;
 
                         Vector2Int pos = new Vector2Int(x, y);
-                        if (cells[pos].isReady == false)
+                        Cell oldCell = cells[pos];
+                        Cell newCell = TrySolve(pos);
+                        bool cellSolutionFound = newCell.isReady == true
+                                                 &&
+                                                 (
+                                                     oldCell.isReady == false
+                                                     ||
+                                                     oldCell.distanceToTarget > newCell.distanceToTarget
+                                                 );
+                        if (cellSolutionFound == true)
                         {
-                            cells[pos] = TrySolve(pos);
-                            someSolutionFound |= cells[pos].isReady;
+                            cells[pos] = newCell;
+                            someSolutionFound = true;
                         }
                     }
                 }
