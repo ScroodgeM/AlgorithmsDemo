@@ -28,10 +28,11 @@ namespace AlgorithmsDemo.World
                 Ray clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 Vector3 clickPointOnGround = clickRay.origin - clickRay.direction / clickRay.direction.y * clickRay.origin.y;
+                Vector2Int destination = clickPointOnGround.ToVector2Int();
 
                 WorldForPathBuilder worldForPathBuilder = worldRoot.GetComponentInChildren<WorldForPathBuilder>();
 
-                if (worldForPathBuilder != null)
+                if (worldForPathBuilder != null && worldForPathBuilder.IsCellWalkable(destination) == true)
                 {
                     if (pathBuilder == null)
                     {
@@ -40,7 +41,7 @@ namespace AlgorithmsDemo.World
 
                     currentPath.Clear();
 
-                    pathBuilder.BuildPath(transform.position.ToVector2Int(), clickPointOnGround.ToVector2Int(), iterations, currentPath, out string processInfoMessage);
+                    pathBuilder.BuildPath(transform.position.ToVector2Int(), destination, iterations, currentPath, out string processInfoMessage);
 
                     OnPathUpdated(processInfoMessage);
 
