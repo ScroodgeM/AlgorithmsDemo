@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using AlgorithmsDemo.DTS;
 using AlgorithmsDemo.World;
+using TMPro;
 using UnityEngine;
 
 namespace AlgorithmsDemo.Visualizers
@@ -10,6 +11,7 @@ namespace AlgorithmsDemo.Visualizers
     public class VectorField : MonoBehaviour
     {
         [SerializeField] private VectorFieldSpawner vectorFieldSpawner;
+        [SerializeField] private TMP_Text globalInfoLabel;
         [SerializeField] private VectorFieldCell pathCellPrefab;
         [SerializeField] private float visualizeHeight;
 
@@ -17,7 +19,7 @@ namespace AlgorithmsDemo.Visualizers
 
         private void Awake()
         {
-            vectorFieldSpawner.GetField().Done(vectorField =>
+            vectorFieldSpawner.OnVectorFieldUpdated += processInfoMessage =>
             {
                 foreach (GameObject victim in destroyBeforeVisualize)
                 {
@@ -26,8 +28,10 @@ namespace AlgorithmsDemo.Visualizers
 
                 destroyBeforeVisualize.Clear();
 
-                VisualizeGrid(vectorField);
-            });
+                globalInfoLabel.text = $"Current action: {processInfoMessage}";
+
+                VisualizeGrid(vectorFieldSpawner.VectorField);
+            };
         }
 
         private void VisualizeGrid(AlgorithmsDemo.Algoritms.VectorField vectorField)

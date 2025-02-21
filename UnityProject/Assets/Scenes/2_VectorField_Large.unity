@@ -336,6 +336,10 @@ PrefabInstance:
       propertyPath: worldRoot
       value: 
       objectReference: {fileID: 1123654356}
+    - target: {fileID: 1060913874920826384, guid: 3393e153087039048ba4ca17cd7ecdbd, type: 3}
+      propertyPath: iterations
+      value: 1000000
+      objectReference: {fileID: 0}
     - target: {fileID: 2615633962780396735, guid: 3393e153087039048ba4ca17cd7ecdbd, type: 3}
       propertyPath: m_Name
       value: VectorFieldSpawner

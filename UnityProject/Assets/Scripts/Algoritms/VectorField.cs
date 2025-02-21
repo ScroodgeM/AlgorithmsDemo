@@ -46,7 +46,7 @@ namespace AlgorithmsDemo.Algoritms
             cells = new ArrayXY<Cell>(Area, Cell.Default, pos => Cell.Default);
         }
 
-        public void BuildField(Vector2Int target)
+        public void BuildField(Vector2Int target, int iterations, out string processInfoMessage)
         {
             destinationTarget = target;
 
@@ -58,6 +58,12 @@ namespace AlgorithmsDemo.Algoritms
 
             int stuckDefense = 0;
             int incrementalRange = 0;
+
+            if (--iterations <= 0)
+            {
+                processInfoMessage = "initialized";
+                return;
+            }
 
             while (true)
             {
@@ -92,6 +98,12 @@ namespace AlgorithmsDemo.Algoritms
                         {
                             cells[pos] = newCell;
                             someSolutionFound = true;
+
+                            if (--iterations <= 0)
+                            {
+                                processInfoMessage = "one more cell solved";
+                                return;
+                            }
                         }
                     }
                 }
@@ -106,6 +118,8 @@ namespace AlgorithmsDemo.Algoritms
                     break;
                 }
             }
+
+            processInfoMessage = "job done";
         }
 
         public Vector2Int GetDirectionToTarget(Vector2Int position)
