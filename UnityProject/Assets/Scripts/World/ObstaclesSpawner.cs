@@ -11,7 +11,7 @@ namespace AlgorithmsDemo.World
         [SerializeField] private GameObject obstaclePrefab;
         [SerializeField] private int obstacleCount;
 
-        void Start()
+        private void Awake()
         {
             WorldForPathBuilder worldForPathBuilder = worldRoot.GetComponentInChildren<WorldForPathBuilder>();
 

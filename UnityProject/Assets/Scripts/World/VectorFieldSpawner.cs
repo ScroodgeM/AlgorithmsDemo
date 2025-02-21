@@ -25,6 +25,7 @@ namespace AlgorithmsDemo.World
             {
                 VectorField vectorField = new VectorField(worldForPathBuilder);
 
+                Physics.SyncTransforms();
                 vectorField.BuildField(target);
 
                 vectorFieldDeferred.Resolve(vectorField);
